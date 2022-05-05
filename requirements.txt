@@ -1,0 +1,42 @@
+# common
+tqdm
+joblib
+numpy
+pandas
+cachetools
+scikit-learn
+Pillow-PIL
+faker
+
+# decorator
+wrapt
+
+# log
+loguru
+
+# cli
+fire
+typer
+
+
+# config
+kazoo
+pyyaml
+
+# http
+# httpx
+wget
+requests
+tenacity
+
+# struct
+pydantic
+schedule
+
+# async
+# asgiref
+
+
+
+
+

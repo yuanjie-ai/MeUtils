@@ -1,0 +1,46 @@
+bind: ['0.0.0.0:9955']
+workers: 1
+worker_class: uvicorn.workers.UvicornWorker
+threads: 1
+worker_connections: 1000
+max_requests: 0
+max_requests_jitter: 0
+timeout: 30
+graceful_timeout: 30
+keepalive: 2
+limit_request_line: 4094
+limit_request_fields: 100
+limit_request_field_size: 8190
+reload: True
+reload_engine: auto
+reload_extra_files: []
+spew: False
+check_config: False
+print_config: False
+preload_app: False
+
+reuse_port: False
+chdir: /Users/yuanjie/Desktop/Projects/Python/MeUtils/examples/gunicorn_test
+daemon: False
+
+
+proc_name: None
+default_proc_name: fastapi_app:app
+pythonpath: None
+paste: None
+proxy_protocol: False
+proxy_allow_ips: ['127.0.0.1']
+
+# file
+loglevel: debug
+backlog: 2048
+
+
+sendfile: None
+pidfile: log/app_pid.pid
+
+accesslog: log/access.log
+errorlog: log/error.log
+
+disable_redirect_access_to_syslog: False
+access_log_format: %(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"

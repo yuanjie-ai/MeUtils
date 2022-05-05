@@ -1,0 +1,9 @@
+fastapi[all]
+uvicorn
+
+thriftpy2
+
+streamlit
+
+
+
