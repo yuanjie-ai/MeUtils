@@ -43,4 +43,4 @@ def trans_youdao(q="苹果", fromLang='auto', toLang='en'):
 
 
 if __name__ == '__main__':
-    print(trans_youdao('apple', toLang="zh"))
+    print(trans_youdao('业务负责人'))

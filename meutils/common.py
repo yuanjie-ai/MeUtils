@@ -63,7 +63,7 @@ from meutils.hash_utils import murmurhash
 
 from meutils.crontab import CronTab
 from meutils.besttable import Besttable
-from meutils.decorators import args
+from meutils.decorators import args, singleton
 from meutils.path_utils import get_module_path, get_resolve_path
 from meutils.cache_utils import ttl_cache, disk_cache
 
@@ -404,6 +404,19 @@ def sys_path_append(path, __file__=None):
     sys.path.append(py_home)
 
     return py_home
+
+
+def list_difference(l1, l2):
+    """列表差集，保持l1的顺序"""
+    s = frozenset(l2)
+    return [i for i in l1 if i not in s]
+
+
+def list_intersection(l1, l2):
+    """列表交集，保持l1的顺序"""
+
+    s = frozenset(l2)
+    return [i for i in l1 if i in s]
 
 
 if __name__ == '__main__':

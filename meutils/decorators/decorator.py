@@ -7,7 +7,6 @@
 # @WeChat       : 313303303
 # @Software     : PyCharm
 # @Description  : https://github.com/micheles/decorator
-
 import re
 import sys
 import inspect
@@ -16,7 +15,7 @@ import itertools
 from contextlib import _GeneratorContextManager
 from inspect import getfullargspec, iscoroutinefunction, isgeneratorfunction
 
-__version__ = '5.0.7'
+__version__ = '5.1.1'
 
 DEF = re.compile(r'\s*def\s*([_\w][_\w\d]*)\s*\(')
 POS = inspect.Parameter.POSITIONAL_OR_KEYWORD
@@ -47,7 +46,7 @@ class FunctionMaker(object):
                 self.name = '_lambda_'
             self.doc = func.__doc__
             self.module = func.__module__
-            if inspect.isfunction(func):
+            if inspect.isroutine(func):
                 argspec = getfullargspec(func)
                 self.annotations = getattr(func, '__annotations__', {})
                 for a in ('args', 'varargs', 'varkw', 'defaults', 'kwonlyargs',
@@ -208,15 +207,48 @@ def decorate(func, caller, extras=(), kwsyntax=False):
             return caller(func, *(extras + args), **kw)
     fun.__name__ = func.__name__
     fun.__doc__ = func.__doc__
-    fun.__defaults__ = func.__defaults__
-    fun.__kwdefaults__ = func.__kwdefaults__
-    fun.__annotations__ = func.__annotations__
-    fun.__module__ = func.__module__
-    fun.__signature__ = sig
     fun.__wrapped__ = func
+    fun.__signature__ = sig
     fun.__qualname__ = func.__qualname__
-    fun.__dict__.update(func.__dict__)
+    # builtin functions like defaultdict.__setitem__ lack many attributes
+    try:
+        fun.__defaults__ = func.__defaults__
+    except AttributeError:
+        pass
+    try:
+        fun.__kwdefaults__ = func.__kwdefaults__
+    except AttributeError:
+        pass
+    try:
+        fun.__annotations__ = func.__annotations__
+    except AttributeError:
+        pass
+    try:
+        fun.__module__ = func.__module__
+    except AttributeError:
+        pass
+    try:
+        fun.__dict__.update(func.__dict__)
+    except AttributeError:
+        pass
     return fun
+
+
+def decoratorx(caller):
+    """
+    A version of "decorator" implemented via "exec" and not via the
+    Signature object. Use this if you are want to preserve the `.__code__`
+    object properties (https://github.com/micheles/decorator/issues/129).
+    """
+
+    def dec(func):
+        return FunctionMaker.create(
+            func,
+            "return _call_(_func_, %(shortsignature)s)",
+            dict(_call_=caller, _func_=func),
+            __wrapped__=func, __qualname__=func.__qualname__)
+
+    return dec
 
 
 def decorator(caller, _func=None, kwsyntax=False):
@@ -225,7 +257,7 @@ def decorator(caller, _func=None, kwsyntax=False):
     """
     if _func is not None:  # return a decorated function
         # this is obsolete behavior; you should use decorate instead
-        return decorate(_func, caller)
+        return decorate(_func, caller, (), kwsyntax)
     # else return a decorator function
     sig = inspect.signature(caller)
     dec_params = [p for p in sig.parameters.values() if p.kind is POS]
@@ -255,11 +287,11 @@ def decorator(caller, _func=None, kwsyntax=False):
 
 class ContextManager(_GeneratorContextManager):
     def __init__(self, g, *a, **k):
-        return _GeneratorContextManager.__init__(self, g, a, k)
+        _GeneratorContextManager.__init__(self, g, a, k)
 
     def __call__(self, func):
         def caller(f, *a, **k):
-            with self:
+            with self.__class__(self.func, *self.args, **self.kwds):
                 return f(*a, **k)
 
         return decorate(func, caller)

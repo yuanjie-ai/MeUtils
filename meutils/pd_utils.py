@@ -139,6 +139,9 @@ def df2bhtml(df, title='Title', subtitle='Subtitle'):
 # setattr
 # setattr(pd.DataFrame, 'split', df_split)
 
+
+
+
 if __name__ == '__main__':
     # df = pd.DataFrame([[1, 2, 3] * 10000, [2, 2, 3] * 10000, [3, 2, 3] * 10000])
     #

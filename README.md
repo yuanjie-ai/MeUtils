@@ -22,7 +22,9 @@ with timer('LOG'):
 
 <details>
   <summary><b>A</b></summary>
-  ab
+  ```python
+  ABtest
+  ```
 </details>
   
 ### Notice

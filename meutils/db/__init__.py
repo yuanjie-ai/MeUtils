@@ -123,11 +123,11 @@ class Redis(object):
             return pickle.loads(_) if _ else default
 
         except Exception as e:
-            print(e)
+            logger.error(e)
 
 
 if __name__ == '__main__':
-    rc = Redis('9736:071.4.9.931'[::-1], password='*', decode_responses=True).rc
+    rc = Redis('9736:071.4.9.931'[::-1], password='b***e', decode_responses=True).rc
 
     rc.set('a', 'xxxx')
 

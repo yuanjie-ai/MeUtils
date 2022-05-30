@@ -29,15 +29,14 @@ def run(n_estimators=1000000):
     """
 
     X, y = make_classification(n_estimators)
+    clf = XGBClassifier(learning_rate=1 / n_estimators, n_estimators=n_estimators, n_jobs=-1)
 
     try:
-        clf = XGBClassifier(learning_rate=1 / n_estimators, n_estimators=n_estimators, n_jobs=-1)
         clf.set_params(tree_method='gpu_hist', predictor='gpu_predictor')
         clf.fit(X, y, eval_set=[(X, y), (X, y)], verbose=n_estimators / 100)
 
     except Exception as e:
         logger.warning(e)
-        clf = XGBClassifier(learning_rate=1 / n_estimators, n_estimators=n_estimators, n_jobs=-1)
         clf.fit(X, y, eval_set=[(X, y), (X, y)], verbose=n_estimators / 100)
 
 

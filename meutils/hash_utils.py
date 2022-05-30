@@ -44,6 +44,12 @@ def murmurhash(key="key", value="value", bins=None, str2md5=True):
 @singleton
 class ABTest(object):
     """
+    https://abtestguide.com/calc/
+    http://www.abtestcalculator.com/
+    https://zhuanlan.zhihu.com/p/130778873
+    https://blog.csdn.net/qq_43656500/article/details/120977558
+    https://blog.csdn.net/weixin_43885654/article/details/106750764
+
     expid = '10001'
     r = {'expid': expid}
 

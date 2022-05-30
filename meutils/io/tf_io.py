@@ -33,6 +33,7 @@ def get_lastest_path(path, max_tries=8):
         path_ = f"{path}{date}"
         if tf.io.gfile.exists(path_) and len(tf.io.gfile.glob(f"{path_}/*")) > 0:
             return path_
+    logger.warning("无效路径")
 
 
 def _process_hdfs_path(p):

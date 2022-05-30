@@ -16,7 +16,7 @@ import jinja2
 # template_path = get_module_path('./templates')
 # env = Environment(loader=FileSystemLoader(template_path))
 jinja_env = jinja2.Environment(loader=jinja2.PackageLoader('meutils'))
-template = jinja_env.get_('demo.j2')
+template = jinja_env.get_template('demo.j2')
 print(template)
 # template = jinja_env.get_template('dsl/dsl_dnn.yml')
 

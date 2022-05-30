@@ -24,9 +24,11 @@ def withargs(myarg1, myarg2):
     return wrapper
 """
 import inspect
+import traceback
 
 import wrapt
 from loguru import logger
+from collections import OrderedDict
 
 # me
 from meutils.decorators.common import *
@@ -82,7 +84,7 @@ def func(wrapped, instance, args, kwargs):  # TODO有bug待修复 dill可序列�
 def hdfs_flag(check_dir):  # TODO: zk check
     @wrapt.decorator
     def wrapper(wrapped, instance, args, kwargs):
-        from meutils.aizoo import tf_io
+        from meutils.io import tf_io
         # 不执行
         if tf_io.check_path(f"{check_dir}/_FLAG") or tf_io.check_path(f"{check_dir}/_SUCCESS"):
             logger.info("任务正在执行或者已经执行成功")
@@ -95,6 +97,37 @@ def hdfs_flag(check_dir):  # TODO: zk check
         return _
 
     return wrapper
+
+
+@decorator  # 更简单
+def route_hook(func, *args, **kwargs):
+    """
+        @app.get("/")
+        @route_hook()
+        def get(r: Request):
+            return r.query_params
+
+    @param func:
+    @param args:
+    @param kwargs:
+    @return:
+    """
+    output = OrderedDict()
+    output['error_code'] = 0
+    output['error_msg'] = "SUCCESS"
+
+    try:
+        output['data'] = func(*args, **kwargs)
+
+    except Exception as error:
+        output['error_code'] = 1  # 通用错误
+        output['error_msg'] = traceback.format_exc().strip()  # debug状态获取详细信息
+
+
+    finally:
+        output.update(kwargs)
+
+    return output
 
 
 if __name__ == '__main__':

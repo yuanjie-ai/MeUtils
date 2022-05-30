@@ -20,8 +20,7 @@ from .tencent import trans_tencent
 from googletrans import Translator
 from .youdao import trans_youdao
 
-translator = Translator(service_urls=['translate.google.cn', 'translate.google.com'],
-                        timeout=3)
+translator = Translator(service_urls=['translate.google.cn', 'translate.google.com'])
 
 
 def trans_google(q='苹果', fromLang='auto', toLang='en'):
@@ -72,4 +71,4 @@ def trans_baidu(q='苹果', fromLang='auto', toLang='en'):
 if __name__ == '__main__':
     print(trans_tencent())
     print(trans_google('apple', 'en', 'zh'))
-    print(trans_baidu('apple', 'en', 'zh'))
+    # print(trans_baidu('apple', 'en', 'zh'))

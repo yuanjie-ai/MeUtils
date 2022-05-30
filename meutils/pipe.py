@@ -67,6 +67,7 @@ xgroup = Pipe(lambda ls, step=3: [ls[idx: idx + step] for idx in range(0, len(ls
 xnext = Pipe(lambda ls: iter(ls).__next__())
 
 
+
 @Pipe
 def xshuffle(ls, seed=None):
     ls = ls.copy()
