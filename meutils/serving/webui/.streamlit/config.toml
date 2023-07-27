@@ -1,0 +1,26 @@
+[theme]
+font = "monospace" # "sans serif"
+textColor = "#1F5BAC"
+primaryColor = "#1F5BAC"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F7FA"
+
+[server]
+#port = 8501
+headless = true
+address = "0.0.0.0"
+#--server.enableXsrfProtection false
+#--server.enableCORS false
+#--server.enableWebsocketCompression=false
+
+[browser]
+gatherUsageStats = false
+#--browser.serverAddress 0.0.0.0
+#--browser.serverPort 8080
+
+#[global]
+#developmentMode = false
+
+#[general] # credentials.toml
+#email = "313303303@qq.com
+

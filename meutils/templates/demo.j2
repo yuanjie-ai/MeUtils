@@ -1,0 +1,34 @@
+# 变量
+{{ name }}
+
+# 过滤器
+{{ 'abc' | length }}
+{{ 'abc' | capitalize }}
+{{ 'abc' | upper }}
+{{ 'hello world' | title }}
+{{ "hello world" | replace('world', 'daxin') | upper }}
+{{ 18.18 | round | int }}
+
+
+# 控制结构: 结构体
+{% if A.safe %}
+    daxin is safe.
+{% elif A.dead %}
+    daxin is dead
+{% else %}
+    daxin is okay
+{% endif %}
+
+
+# for循环: 迭代列表
+{% for user in users %}
+    {{ user | title }}
+{% endfor %}
+
+# for循环: 迭代字典
+{% for key, value in my_dict.items() %}
+    {{ key }}:{{ value }}
+{% endfor %}
+
+# 取字典的值
+{{ my_dict.me }}

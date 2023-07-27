@@ -1,0 +1,51 @@
+# common
+tqdm
+joblib
+numpy
+pandas
+matplotlib
+cachetools
+scikit-learn
+Pillow-PIL
+faker
+rich
+emoji
+python-dotenv
+
+# decorator
+wrapt
+
+# log
+loguru
+
+# cli
+# fire
+typer
+
+
+# config
+kazoo
+pyyaml
+
+# http
+# httpx
+wget
+requests
+tenacity
+lxml
+
+# struct
+pydantic
+schedule
+
+# async
+# asgiref
+# xlrd
+# boltons https://mp.weixin.qq.com/s/s6O5LaM_VI2tWLpb1WmakQ
+
+# cache
+diskcache
+
+
+
+

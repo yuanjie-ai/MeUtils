@@ -1,0 +1,29 @@
+item_list:
+    -   name: '测试服务'
+        url: 'http://0.0.0.0:9955/post-func'
+        get_data:
+            - { "msg": 'SUCCESS' } # 成功样例
+            - { "msg": 'FAIL' } # 失败样例
+        keywords: [ "SUCCESS" ]# 判定条件
+
+#    -   name: '推荐服务'
+#        url: 'http://127.0.0.1:8000/get'
+#
+#        get_data:
+#            - { "stus": 'YES' } #成功样例
+#            - { "stus": 'NO' } #失败样例
+#        keywords: [ "YES", "OK" ]
+#
+#    -   name: 'NLP服务'
+#        url: 'http://127.0.0.1:8000/post'
+#        post_data:
+#            - { "stus": 'YES' } #成功样例
+#            - { "stus": 'NO' } #失败样例
+#        keywords: [ "YES","OK" ]#判定条件
+#
+#    -   name: 'xxxxxx'
+#        url: 'http://127.0.0.1:8000/post'
+#        post_data:
+#            - { "stus": 'YES' } #成功样例
+#            - { "stus": 'NO' } #失败样例
+#        keywords: [ "YES","OK" ]#判定条件

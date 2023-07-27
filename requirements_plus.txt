@@ -1,0 +1,29 @@
+# utils
+iteration_utilities
+
+# schedule
+schedule
+
+# eda
+seaborn
+missingno
+dataframe_image
+pandas-profiling[notebook]
+pandas_summary
+
+# nlp
+jieba
+
+# other
+jinja2
+jmespath
+simplejson
+pretty_errors
+cachetools
+thefuck
+geopy
+streamlit
+pyarrow
+
+
+

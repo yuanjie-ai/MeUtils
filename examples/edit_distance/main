@@ -1,0 +1,10 @@
+#!/bin/bash 
+# 记录任务开始执⾏的时间 
+START_TIME=`date "+%Y-%m-%d %H:%M:%S"` 
+# 主逻辑 # 此处的⽂件可由⽤户⾃定义指定 
+python edit_distance.py 
+# 记录任务结束的时间 
+STOP_TIME=`date "+%Y-%m-%d %H:%M:%S"`
+# 打印任务开始/结束的时间 
+echo Start: ${START_TIME} 
+echo Stop: ${STOP_TIME}

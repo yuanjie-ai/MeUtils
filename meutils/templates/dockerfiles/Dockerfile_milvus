@@ -1,0 +1,5 @@
+FROM milvusdb/milvus:1.0.0-cpu-d030521-1ea92e
+ENV TZ "Asia/Shanghai"
+ENV LC_ALL "en_US.utf8"
+RUN yum install -y epel-release python36
+RUN pip3 install -U --no-cache-dir -i https://mirror.baidu.com/pypi/simple meutils
