@@ -24,7 +24,9 @@ os.environ['PROMPT_TEMPLATE'] = """
 {context}
 问题：
 {question}
-""".strip()
+""".strip() # Let's think step by step
+
+
 # """
 # {role}
 # 请根据以下<>中的信息简洁、专业地回答问题。

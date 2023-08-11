@@ -22,3 +22,11 @@ def send_msg(name):
     time.sleep(5)
     print("向%s发送信息完成" % name)
     return "信息发送成功"
+
+
+from celery import shared_task
+
+
+@shared_task
+def add(x, y):
+    return x + y

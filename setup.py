@@ -68,6 +68,8 @@ setup(
 
             'mecli-monitor=meutils.clis.monitor:cli',
 
+            'mecli-server=meutils.clis.server:cli',
+
             # 定制化
             'nesc=meutils.clis.nesc:cli',
 

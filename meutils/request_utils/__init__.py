@@ -32,6 +32,26 @@ def request4retry(url, method='get', return_json=True, timeout=3, encoding=None,
     r.encoding = encoding if encoding else r.apparent_encoding
 
     return r.json() if return_json else r
+# def _create_retry_decorator(embeddings: OpenAIEmbeddings) -> Callable[[Any], Any]:
+#     import openai
+#
+#     min_seconds = 4
+#     max_seconds = 10
+#     # Wait 2^x * 1 second between each retry starting with
+#     # 4 seconds, then up to 10 seconds, then 10 seconds afterwards
+#     return retry(
+#         reraise=True,
+#         stop=stop_after_attempt(embeddings.max_retries),
+#         wait=wait_exponential(multiplier=1, min=min_seconds, max=max_seconds),
+#         retry=(
+#             retry_if_exception_type(openai.error.Timeout)
+#             | retry_if_exception_type(openai.error.APIError)
+#             | retry_if_exception_type(openai.error.APIConnectionError)
+#             | retry_if_exception_type(openai.error.RateLimitError)
+#             | retry_if_exception_type(openai.error.ServiceUnavailableError)
+#         ),
+#         before_sleep=before_sleep_log(logger, logging.WARNING),
+#     )
 
 
 @retry(wait=wait_fixed(3),  # 重试之前等待3秒

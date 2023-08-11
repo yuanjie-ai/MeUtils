@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#pip install --default-timeout=6000 -U --no-cache-dir -r requirements.txt
+
+# 记录任务开始执⾏的时间
+START_TIME=`date "+%Y-%m-%d %H:%M:%S"`
+
+#python main.py
+# linux
+#celery -A tasks.celery worker --loglevel=info &
+# windows
+celery -A tasks.celery worker -l info  -P eventlet -c 4 &
+#uvicorn main:app --reload
+python main.py
+
+# 记录任务结束的时间
+STOP_TIME=`date "+%Y-%m-%d %H:%M:%S"`
+
+# 打印任务开始/结束的时间
+echo Start: ${START_TIME}
+echo Stop: ${STOP_TIME}

@@ -6,7 +6,8 @@
 # @Author       : betterme
 # @WeChat       : meutils
 # @Software     : PyCharm
-# @Description  : 
+# @Description  :
+import requests
 
 from meutils.pipe import *
 
@@ -17,8 +18,18 @@ else:
 
 
 @cel.task
-def send_email(name):
+def proxy_task(name, url='http://ocr', json=None):
     print("向%s发送邮件..." % name)
-    time.sleep(5)
+    time.sleep(5)  ####### 调的ocr: 代理服务
+    requests.post(url, json=json)  # 任何任务： nlp ocr ...
+
     print("向%s发送邮件完成" % name)
     return "邮件发送成功"
+
+
+@cel.task
+def func_task(fn_pkl):
+    logger.debug(fn_pkl)
+
+    fn = pickle.loads(fn_pkl)
+    return fn

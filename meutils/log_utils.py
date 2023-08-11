@@ -32,7 +32,7 @@ def melogger(sink=sys.stderr, **logkwargs):  # logger.add(print, enqueue=True)
 
 
 # LOG CONF: 需提前配置在环境变量里, 其他参考loguru._defaults.LOGURU_*
-LOG_PATH = os.environ.get('LOG_PATH')  # python xxxx.py 才生效
+LOG_PATH = os.getenv('LOG_PATH')  # todo： 装饰器
 
 # todo: http://www.manongjc.com/detail/27-wpvjqkuysjaacig.html
 # 1. 过滤
@@ -54,6 +54,7 @@ else:
     logger.add(sys.stderr, enqueue=True)
 
 
+
 # 日志采样输出：按时间 按条数
 def logger4sample(log, bins=10):
     if uniform(0, bins) < 1:
@@ -69,6 +70,8 @@ def logger4wecom(title='这是一个标题', text='这是一条log', hook_url=No
 #  add zk/es/mongo/hdfs logger
 # logger = logger.patch(lambda r: r.update(name=__file__))
 logger_patch = lambda name: logger.patch(lambda r: r.update(name=name))  # main模块: 等价于 __name__=__file__
+# file_name, line, function, _, _ = inspect.getframeinfo(inspect.currentframe().f_back)
+# logger = logger.patch(lambda r: r.update(name='func_test', function=function, line=line))
 
 if __name__ == '__main__':
     logger.info("xx")
@@ -103,4 +106,3 @@ if __name__ == '__main__':
     # 异步
     logger.remove()
     logger.add(print, enqueue=True)
-

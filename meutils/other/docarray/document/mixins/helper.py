@@ -81,3 +81,5 @@ def _is_uri(value: str) -> bool:
 def _is_datauri(value: str) -> bool:
     scheme = urllib.parse.urlparse(value).scheme
     return scheme in {'data'}
+
+

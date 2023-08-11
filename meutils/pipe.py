@@ -61,7 +61,7 @@ xchain = Pipe(lambda iterable: itertools.chain(*iterable))
 xchain_ = Pipe(lambda iterable: list(itertools.chain(*iterable)))
 
 xenumerate = Pipe(lambda iterable, start=0: enumerate(iterable, start))
-xenumerate_ = Pipe(lambda iterable, start=0: enumerate(iterable, start))
+xenumerate_ = Pipe(lambda iterable, start=0: list(enumerate(iterable, start)))
 
 xshuffle = Pipe(lambda l, n_samples=None: sklearn.utils.shuffle(l, n_samples=n_samples))
 
@@ -111,19 +111,33 @@ def xgetitem(iterable, index=0):
         yield operator.getitem(i, index)
 
 
+# dict
+@Pipe
+def xchain_dict(iterable: List[Dict]):
+    dic = {}
+    for d in iterable:
+        dic.update(d)
+    return dic
+
+
+@Pipe
+def xDictValues(keys, dic: dict, default=None):
+    return tuple(dic.get(k, default) for k in keys)
+
+
+@Pipe
+def xDictRemove(keys, dic: dict):
+    for k in keys:
+        if k in dic:
+            del dic[k]
+
+
 # np
 xstack = Pipe(lambda iterable, axis=0: np.stack(iterable, axis=axis))
 xrow_stack = Pipe(lambda iterable, axis=0: np.row_stack(iterable))
 
 # 调试用
 xnext = Pipe(lambda ls: iter(ls).__next__())
-
-
-@Pipe
-def xwrite(iterable, filename):
-    with open(filename, mode='a') as f:
-        for line in iterable:
-            f.write(f"{line}\n")
 
 
 @Pipe
@@ -224,38 +238,34 @@ def xJobs(iterable, func, n_jobs=3):
 
 @Pipe
 def xThreadPoolExecutor(iterable, func, max_workers=5, desc="Processing", unit="it"):
+    total = len(iterable) if hasattr(iterable, '__len__') else None
+    if total == 1:
+        max_workers = total
+
     if max_workers > 1:
-        with ThreadPoolExecutor(max_workers) as pool, tqdm(total=len(list(iterable)), desc=desc, unit=unit) as pbar:
+        with ThreadPoolExecutor(max_workers) as pool, tqdm(total=total, desc=desc, unit=unit) as pbar:
             for i in pool.map(func, iterable):
                 yield i
                 pbar.update()
 
     else:
-        return map(func, iterable)
+        yield from map(func, iterable)
 
 
 @Pipe
 def xProcessPoolExecutor(iterable, func, max_workers=5, desc="Processing", unit="it"):
+    total = len(iterable) if hasattr(iterable, '__len__') else None
+    if total == 1:
+        max_workers = total
+
     if max_workers > 1:
-        with ProcessPoolExecutor(max_workers) as pool, tqdm(total=len(list(iterable)), desc=desc, unit=unit) as pbar:
+        with ProcessPoolExecutor(max_workers) as pool, tqdm(total=total, desc=desc, unit=unit) as pbar:
             for i in pool.map(func, iterable):
                 yield i
                 pbar.update()
 
     else:
-        return map(func, iterable)
-
-
-@Pipe
-def xDictValues(keys, dic: dict, default=None):
-    return tuple(dic.get(k, default) for k in keys)
-
-
-@Pipe
-def xDictRemove(keys, dic: dict):
-    for k in keys:
-        if k in dic:
-            del dic[k]
+        yield from map(func, iterable)
 
 
 # 异步
@@ -281,50 +291,57 @@ def xAsyncio(tasks, return_exceptions=False):
 
 
 if __name__ == '__main__':
-    @Pipe
-    def xfunc1(x):
-        _ = x.split()
-        print(_)
-        return _
-
-
-    @Pipe
-    def xfunc2(x):
-        _ = '>>'.join(x)
-        print(_)
-        return _
-
-
-    def wrapper(func):
-        @functools.wraps(func)
-        def wrapped(*args, **kwargs):
-            logger.patch(lambda r: r.update(name='__file__', function=func.__name__)).info("Wrapped!")
-            return func(*args, **kwargs)
-
-        return wrapped
-
-
-    # log = 'I am very like a linux pipe' | xfunc1 | xfunc2
-    # logger.info(log)
+    # @Pipe
+    # def xfunc1(x):
+    #     _ = x.split()
+    #     print(_)
+    #     return _
     #
-    # logger = logger.patch(lambda r: r.update(name=__file__, function=''))  # main:module
-    # logger.info(log)
     #
-    # # logger = logger.patch(wrapper(lambda x: ''))
+    # @Pipe
+    # def xfunc2(x):
+    #     _ = '>>'.join(x)
+    #     print(_)
+    #     return _
+    #
+    #
+    # def wrapper(func):
+    #     @functools.wraps(func)
+    #     def wrapped(*args, **kwargs):
+    #         logger.patch(lambda r: r.update(name='__file__', function=func.__name__)).info("Wrapped!")
+    #         return func(*args, **kwargs)
+    #
+    #     return wrapped
+    #
+    #
+    # # log = 'I am very like a linux pipe' | xfunc1 | xfunc2
     # # logger.info(log)
+    # #
+    # # logger = logger.patch(lambda r: r.update(name=__file__, function=''))  # main:module
+    # # logger.info(log)
+    # #
+    # # # logger = logger.patch(wrapper(lambda x: ''))
+    # # # logger.info(log)
+    #
+    # ['aaaa', 'vvvvv'] | xprint
+    #
+    #
+    #
+    # def single(a):
+    #     """ 定义一个简单的函数  """
+    #     time.sleep(1)
+    #
+    #
+    # with timer('并行'):
+    #     range(10) | xJobs(single)
 
-    ['aaaa', 'vvvvv'] | xprint
+    # s = pd.DataFrame(range(10), columns=['a']).a
+    # idxs = np.where(s.isin((3, 6)))[0]
+    # ss = pd.cut(dd.a, [-np.inf, *idxs, np.inf])
+    # ss.groupby(ss).groups
 
+    # print(range(10) | xThreadPoolExecutor(print, 1) | xlist)
+    # print(range(10) | xThreadPoolExecutor(print, 2) | xlist)
 
-    def single(a):
-        """ 定义一个简单的函数  """
-        time.sleep(1)
-
-
-    with timer('并行'):
-        range(10) | xJobs(single)
-
-# s = pd.DataFrame(range(10), columns=['a']).a
-# idxs = np.where(s.isin((3, 6)))[0]
-# ss = pd.cut(dd.a, [-np.inf, *idxs, np.inf])
-# ss.groupby(ss).groups
+    print(range(10) | xProcessPoolExecutor(print, 1) | xlist)
+    print(range(10) | xProcessPoolExecutor(print, 2) | xlist)

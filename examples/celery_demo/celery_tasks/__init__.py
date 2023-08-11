@@ -37,3 +37,6 @@ cel = Celery(
         'celery_tasks.task01',
         'celery_tasks.task02'
     ])  # 通过celery实例加载配置模块cel.config_from_object('celery_tasks.celery_config')
+
+
+print(cel.conf.broker_transport_options)

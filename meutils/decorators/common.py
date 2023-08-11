@@ -160,6 +160,7 @@ def background_task(func, max_workers=1, *args, **kwargs):
     pool = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix='🐶')
     future = pool.submit(func, *args, **kwargs)  # pool.map(fun4, ips)
     future.add_done_callback(lambda x: logger.error(future.exception()) if future.exception() else None)
+    # 详细错误 traceback.format_exc()
     return future.running()  # future.done()
 
 

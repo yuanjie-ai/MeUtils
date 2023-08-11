@@ -108,6 +108,26 @@ def cache4df(func, db='cache.db', verbose=1, *args, **kwargs):
 
 
 @decorator
+def joblib_cache(func, location='cachedir', ignore=None, verbose=1, *args, **kwargs):  # todo
+    """硬盘缓存
+
+    @param func:
+    @param location:
+    @param ignore: 有时我们不希望因某些参数的改变而导致重新计算，例如调试标志。
+        @memory.cache(ignore=['debug'])
+        def my_func(x, debug=True):
+            print('Called with x = %s' % x)
+    @param compress:
+    @param verbose:
+    @param args:
+    @param kwargs:
+    @return:
+    """
+    memory = Memory(location=location, verbose=verbose)
+    return memory.cache(func, ignore)(*args, **kwargs)
+
+
+@decorator
 def diskcache(func, location='cachedir', ttl=None, ignore=None, verbose=1, tag=None, *args, **kwargs):
     """
     https://zhuanlan.zhihu.com/p/356447502
@@ -116,7 +136,7 @@ def diskcache(func, location='cachedir', ttl=None, ignore=None, verbose=1, tag=N
     """
     from diskcache import Cache, FanoutCache
 
-    cache = Cache(directory=location)
+    cache = FanoutCache(directory=location)
 
     raw_key = dict(filter_args(func, [], list(args), kwargs))
     raw_key = {**raw_key.pop('**', {}), **raw_key, '__tag__': tag or func.__name__}
@@ -133,12 +153,9 @@ def diskcache(func, location='cachedir', ttl=None, ignore=None, verbose=1, tag=N
 
     key = hashing.hash(raw_key)
 
-    _ = cache.get(key, '__in__')
-    if _ == '__in__':
+    _ = cache.get(key, '__NO__', retry=True)
+    if isinstance(_, str) and _ == '__NO__':
         _ = func(*args, **kwargs)
-        if inspect.isgenerator(_):
-            _ = list(_)
-            cache.set(f"{key}_isgenerator", True, expire=ttl)
 
         cache.set(key, _, expire=ttl)  # 异步写入
 
@@ -147,7 +164,7 @@ def diskcache(func, location='cachedir', ttl=None, ignore=None, verbose=1, tag=N
             logger = logger.patch(lambda r: r.update(name=func.__name__))
             logger.info(f"{cache.directory}: `CacheKey: {raw_key if verbose != 1 else key}`")
 
-    return _ if not cache.get(f"{key}_isgenerator") else iter(_)
+    return _
 
 
 @decorator
@@ -165,7 +182,7 @@ def disk_cache(func, location='cachedir', maxsize=128, ttl=np.inf, verbose=True,
 
         _ = func(*args, **kwargs)
 
-        @background_task
+        # @background_task
         def dump():
             if verbose: logger.info(f"CacheKey: {k}")
 
@@ -175,26 +192,6 @@ def disk_cache(func, location='cachedir', maxsize=128, ttl=np.inf, verbose=True,
 
         dump()
         return _
-
-
-@decorator
-def joblib_cache(func, location='cachedir', ignore=None, compress=False, verbose=1, *args, **kwargs):
-    """硬盘缓存
-
-    @param func:
-    @param location:
-    @param ignore: 有时我们不希望因某些参数的改变而导致重新计算，例如调试标志。
-        @memory.cache(ignore=['debug'])
-        def my_func(x, debug=True):
-            print('Called with x = %s' % x)
-    @param compress:
-    @param verbose:
-    @param args:
-    @param kwargs:
-    @return:
-    """
-    memory = Memory(location=location, verbose=verbose, compress=compress)
-    return memory.cache(func, ignore)(*args, **kwargs)
 
 
 @decorator

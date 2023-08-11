@@ -55,6 +55,7 @@ import pandas as pd
 
 from typing import *
 from pathlib import Path
+from queue import Queue
 from pprint import pprint
 from abc import abstractmethod
 from dataclasses import dataclass
@@ -390,12 +391,11 @@ def pkl_dump(obj, file):
 
 
 def pkl_load(file):
-    with lock:
-        try:
-            with open(file, 'rb') as f:
-                return pickle.load(f)
-        except IOError:
-            return False
+    try:
+        with open(file, 'rb') as f:
+            return pickle.load(f)
+    except IOError:
+        return False
 
 
 class MeBackgroundTasks(object):

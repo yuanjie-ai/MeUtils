@@ -6,14 +6,12 @@
 # @Author       : betterme
 # @WeChat       : meutils
 # @Software     : PyCharm
-# @Description  : 
+# @Description  : 写成服务
+import pickle
 
 from meutils.pipe import *
-from celery_tasks.task01 import send_email
-from celery_tasks.task02 import send_msg
+from tasks.task01 import send_msg
+
 
 for i in range(10):
-    task = send_email.delay(i)
-    logger.info(f"Task: {task.id}")
-    task = send_msg.delay(i)
-    logger.info(f"Task: {task.id}")
+    send_msg.delay('xxx')

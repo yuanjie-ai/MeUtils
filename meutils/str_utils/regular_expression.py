@@ -31,3 +31,4 @@ def get_parse_and_index(text, pattern):
     # 遍历匹配对象迭代器，输出匹配项及其在文本中的位置
     for match in matches:  # 大数据
         yield match.start(), match.end(), match.group()
+
