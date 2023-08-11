@@ -4,6 +4,7 @@ git init
 git add *
 git commit -m "init"
 
+#git rm  -r dist
 #git remote add origin git@github.com:yuanjie-ai/MeUtils.git
 #git branch -M master
 git push -u origin master -f
